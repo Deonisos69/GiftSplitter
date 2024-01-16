@@ -1,6 +1,7 @@
 import './App.css'
 import PeopleAdder from './Components/PeopleAdder'
 import PresentAdder from './Components/PresentAdder'
+import Score from './Components/Score'
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
     <>
       <PeopleAdder />
       <PresentAdder />
+      <Score />
     </>
   )
 }

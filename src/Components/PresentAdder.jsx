@@ -7,10 +7,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableBody,
   TextField,
 } from "@mui/material";
 import { usePresentStore } from "../db/usePresentStore";
 import { useState } from "react";
+import Transaction from "../model/Transaction";
 
 export default function PresentAdder() {
   const [from, setFrom] = useState([]);
@@ -20,8 +22,10 @@ export default function PresentAdder() {
   const [paidBy, setPaidBy] = useState("");
 
   const presents = usePresentStore((state) => state.presents);
+  /** @type {Array} */
   const people = usePresentStore((state) => state.people);
   const addPresentStore = usePresentStore((state) => state.addPresent);
+  const addTransaction = usePresentStore((state) => state.addTransaction);
   const addPresent = (name, price, from, to, paidBy) => {
     addPresentStore(name, price, from, to, paidBy);
     setFrom([]);
@@ -30,7 +34,43 @@ export default function PresentAdder() {
     setPrice("");
     setPaidBy("");
   };
-  const deletePresent = usePresentStore(state => state.deletePresent)
+  const addTransactions = () => {
+    for (const present of presents) {
+      for (var i = 0; i < present.from.length; i++) {
+        if (present.from[i].id === present.paidBy.id) continue;
+        people
+          .find((person) => person.id === present.from[i].id)
+          .transactions.push({
+            to: present.paidBy,
+            amount: present.price / present.from.length,
+          });
+      }
+    }
+  };
+  const calculateTransactions = () => {
+    addTransactions();
+
+    for (var i = 0; i < people.length; i++) {
+      for (var j = i + 1; j < people.length; j++) {
+        var amount = 0;
+        for (var k = 0; k < people[i].transactions.length; k++) {
+          if (people[i].transactions[k].to.id === people[j].id) {
+            amount += people[i].transactions[k].amount;
+          }
+        }
+        for (var l = 0; l < people[j].transactions.length; l++) {
+          if (people[j].transactions[l].to.id === people[i].id) {
+            amount -= people[j].transactions[l].amount;
+          }
+        }
+        if (amount === 0) continue;
+        const transTest = amount > 0 ? new Transaction(people[i], people[j], amount) : new Transaction(people[j], people[i], amount * -1) ;
+        addTransaction(transTest);
+        console.log(transTest);
+      }
+    }
+  };
+  const deletePresent = usePresentStore((state) => state.deletePresent);
   return (
     <>
       <div className="presentsDiv">
@@ -56,7 +96,9 @@ export default function PresentAdder() {
                     displayEmpty
                   >
                     {people.map((person) => (
-                      <MenuItem key={person.id}>{person.name}</MenuItem>
+                      <MenuItem key={person.id} value={person}>
+                        {person.name}
+                      </MenuItem>
                     ))}
                   </Select>
                 </TableCell>
@@ -82,11 +124,19 @@ export default function PresentAdder() {
                   />
                 </TableCell>
                 <TableCell>
-                  <TextField
+                  <Select
                     variant="standard"
                     value={paidBy}
                     onChange={(e) => setPaidBy(e.target.value)}
-                  />
+                    label={"People"}
+                    displayEmpty
+                  >
+                    {from.map((person) => (
+                      <MenuItem key={person.id} value={person}>
+                        {person.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
                 </TableCell>
                 <TableCell>
                   <Button
@@ -98,25 +148,30 @@ export default function PresentAdder() {
                 </TableCell>
               </TableRow>
             </TableHead>
-            {presents.map((present) => (
-              <TableRow key={present.id}>
-                <TableCell>{present.from}</TableCell>
-                <TableCell>{present.to}</TableCell>
-                <TableCell>{present.name}</TableCell>
-                <TableCell>{present.price}</TableCell>
-                <TableCell>{present.paidBy}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="text"
-                    onClick={() => deletePresent(present.id)}
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            <TableBody>
+              {presents.map((present) => (
+                <TableRow key={present.id}>
+                  <TableCell>
+                    {present.from.map((from) => from.name).join(", ")}
+                  </TableCell>
+                  <TableCell>{present.to}</TableCell>
+                  <TableCell>{present.name}</TableCell>
+                  <TableCell>{present.price}</TableCell>
+                  <TableCell>{present.paidBy.name}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="text"
+                      onClick={() => deletePresent(present.id)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
           </Table>
         </TableContainer>
+        <Button onClick={() => calculateTransactions()}>Calculate</Button>
       </div>
     </>
   );

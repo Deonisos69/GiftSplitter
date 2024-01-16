@@ -8,5 +8,6 @@ export default class Person {
     constructor(name) {
         this.name = name
         this.id = v4()
+        this.transactions = []
     }
 }

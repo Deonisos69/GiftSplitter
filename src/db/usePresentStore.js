@@ -5,6 +5,7 @@ import Present from "../model/Present";
 export const usePresentStore = create((set) => ({
   people: [],
   presents: [],
+  transactions: [],
   addPerson: (name) => {
     const newPerson = new Person(name);
     set((state) => ({ people: [...state.people, newPerson] }));
@@ -21,6 +22,11 @@ export const usePresentStore = create((set) => ({
   deletePresent: (id) => {
     set((state) => ({
       presents: state.presents.filter((present) => present.id != id),
+    }));
+  },
+  addTransaction: (transaction) => {
+    set((state) => ({
+      transactions: [...state.transactions, transaction],
     }));
   },
 }));
