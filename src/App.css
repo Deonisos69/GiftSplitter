@@ -13,6 +13,12 @@
   max-width: 860px;
 }
 
+body {
+  background: rgb(209,247,255);
+  background: radial-gradient(circle, rgba(209,247,255,0.2) 0%, rgba(138,138,208,0.5) 61%, rgba(41,35,142,0.7) 100%);
+  overflow: hidden;
+}
+
 .people {
   flex-direction: row;
 }
@@ -25,7 +31,7 @@
 }
 
 .presentsDiv {
-  background-color: rgb(230, 230, 230);
+
 }
 
 .presentInput, div {
@@ -35,4 +41,17 @@
 #addButton {
   /* position: absolute; */
   margin: 20px;
+}
+
+#back {
+  position: absolute;
+  bottom: 10%;
+  left: 10%;
+  
+}
+
+#forward {
+  position: absolute;
+  bottom: 10%;
+  right: 10%;
 }

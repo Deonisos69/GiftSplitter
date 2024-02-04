@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { usePresentStore } from "../db/usePresentStore";
-import { TextField, Button, Chip } from "@mui/material";
+import { TextField, Chip } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import { Add } from "@mui/icons-material";
 
 export default function PeopleAdder() {
   // State
@@ -17,7 +19,7 @@ export default function PeopleAdder() {
   }
   return (
     <>
-    <h1>PEOPLE</h1>
+    <h1>WHO PARTICIPATED IN THE GIFT GIVING?</h1>
     <div>
       <TextField
         variant="standard"
@@ -26,10 +28,11 @@ export default function PeopleAdder() {
         }}
         onChange={(e) => setPersonName(e.target.value)}
         value={personName}
+        label={"Name"}
       />
-      <Button variant="text" onClick={() => handleAddPerson()}>
-        Add Person
-      </Button>
+      <IconButton variant="text" onClick={() => handleAddPerson()}>
+        <Add fontSize="medium"/>
+      </IconButton>
     </div>
       <div className="people">
         {people.map((person) => (
