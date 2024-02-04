@@ -97,7 +97,7 @@ function App() {
         onClick={() => nextWindow()}
         disabled={
           windows.findIndex((item) => item === currentWindow) ===
-          windows.length - 1 || presents.length == 0
+          windows.length - 1 || (presents.length == 0 && currentWindow === "PeopleAdder")
         }
       >
         <ArrowForward fontSize="large" />
