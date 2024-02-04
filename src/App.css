@@ -23,6 +23,10 @@ body {
   flex-direction: row;
 }
 
+.person {
+  margin-right: 10px !important; 
+}
+
 .presentInput {
   justify-content: space-evenly;
   width: 100%;
@@ -47,11 +51,28 @@ body {
   position: absolute;
   bottom: 10%;
   left: 10%;
-  
+
 }
 
 #forward {
   position: absolute;
   bottom: 10%;
   right: 10%;
+}
+
+.score {
+  font-size: 25pt;
+  font-weight: bold;
+}
+
+.tableTop {
+  background-color: rgba(41,35,142,0.1);
+}
+
+.tableSecond {
+  background-color: rgba(41,35,142,0.05);
+}
+
+.tableElement {
+  background-color: rgba(209,247,255,0.05)
 }

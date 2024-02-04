@@ -29,4 +29,12 @@ export const usePresentStore = create((set) => ({
       transactions: [...state.transactions, transaction],
     }));
   },
+  reset: () => {
+    set((state) => ({
+      transactions: [],
+      people: state.people.map((person) => {
+        return { name: person.name, id: person.id, transactions: [] };
+      }),
+    }));
+  },
 }));

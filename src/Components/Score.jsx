@@ -9,7 +9,7 @@ export default function Score() {
   return (
     <div>
         {transactions.map(transaction => (
-            <div key={transaction.id}>{transaction.from.name} schuldet {transaction.to.name} {transaction.amount} €</div>
+            <div className="score animate__animated animate__backInRight" key={transaction.id}>{transaction.from.name} schuldet {transaction.to.name} {transaction.amount} €</div>
         ))}
     </div>
   )

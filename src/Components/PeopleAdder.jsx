@@ -18,19 +18,19 @@ export default function PeopleAdder() {
     setPersonName("")
   }
   return (
-    <>
-    <h1>WHO PARTICIPATED IN THE GIFT GIVING?</h1>
+    <div className="animate__animated animate__fadeIn animate__faster">
+    <h1>WER HAT SICH AN DEN GESCHENKEN BETEILIGT?</h1>
     <div>
       <TextField
         variant="standard"
         onKeyDown={(e) => {
-          if (e.key === "Enter") handleAddPerson();
+          if (e.key === "Enter" && !(personName == "" || personName == " ")) handleAddPerson();
         }}
         onChange={(e) => setPersonName(e.target.value)}
         value={personName}
         label={"Name"}
       />
-      <IconButton variant="text" onClick={() => handleAddPerson()}>
+      <IconButton disabled={!personName || personName == " "} variant="text" onClick={() => handleAddPerson()}>
         <Add fontSize="medium"/>
       </IconButton>
     </div>
@@ -40,9 +40,13 @@ export default function PeopleAdder() {
             onDelete={() => deletePerson(person.id)}
             key={person.id}
             label={person.name}
+            className="animate__animated animate__bounceIn person"
+            variant="filled"
+            size="medium"
+            color="primary"
           ></Chip>
         ))}
       </div>
-    </>
+    </div>
   );
 }
