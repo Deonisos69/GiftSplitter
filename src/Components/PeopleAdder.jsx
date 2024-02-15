@@ -18,7 +18,7 @@ export default function PeopleAdder() {
     setPersonName("")
   }
   return (
-    <div className="animate__animated animate__fadeIn animate__faster">
+    <div className="animate__animated animate__slideInLeft animate__faster" id="PeopleAdder">
     <h1>WER HAT SICH AN DEN GESCHENKEN BETEILIGT?</h1>
     <div>
       <TextField
@@ -43,7 +43,7 @@ export default function PeopleAdder() {
             className="animate__animated animate__bounceIn person"
             variant="filled"
             size="medium"
-            color="primary"
+            color="secondary"
           ></Chip>
         ))}
       </div>

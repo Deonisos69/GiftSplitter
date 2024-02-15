@@ -8,16 +8,25 @@ import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import "animate.css";
 import { usePresentStore } from "./db/usePresentStore";
 import Transaction from "./model/Transaction";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function App() {
   const [currentWindow, setCurrentWindow] = useState("PeopleAdder");
   const [windows] = useState(["PeopleAdder", "PresentAdder", "Score"]);
+  const [presentAdderAnimation, setPresentAdderAnimation] = useState(true);
 
   const reset = usePresentStore((state) => state.reset);
   const presents = usePresentStore((state) => state.presents);
   /** @type {Array} */
   const people = usePresentStore((state) => state.people);
   const addTransaction = usePresentStore((state) => state.addTransaction);
+
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#7572B8" },
+      secondary: { main: "#D5C784" },
+    },
+  });
 
   const addTransactions = () => {
     for (const present of presents) {
@@ -49,10 +58,7 @@ function App() {
           }
         }
         if (amount === 0) continue;
-        const transTest =
-          amount > 0
-            ? new Transaction(people[i], people[j], amount)
-            : new Transaction(people[j], people[i], amount * -1);
+        const transTest = amount > 0 ? new Transaction(people[i], people[j], amount) : new Transaction(people[j], people[i], amount * -1);
         addTransaction(transTest);
       }
     }
@@ -60,35 +66,38 @@ function App() {
 
   const nextWindow = () => {
     let index = windows.findIndex((item) => item === currentWindow);
-    if (index === windows.length - 2) calculateTransactions();
-    index === windows.length - 1
-      ? setCurrentWindow(windows[0])
-      : setCurrentWindow(windows[index + 1]);
+    if (index == 0) setPresentAdderAnimation("animate__slideInRight");
+    const element = document.querySelector("#" + currentWindow);
+    element.className = "animate__animated animate__bounceOutLeft animate__faster";
+
+    element.addEventListener("animationend", () => {
+      if (index === windows.length - 2) calculateTransactions();
+      index === windows.length - 1 ? setCurrentWindow(windows[0]) : setCurrentWindow(windows[index + 1]);
+    });
   };
 
   const previousWindow = () => {
     let index = windows.findIndex((item) => item === currentWindow);
-    if (index === windows.length - 1) reset();
-    index === 0
-      ? setCurrentWindow(windows[windows.length - 1])
-      : setCurrentWindow(windows[index - 1]);
+    if (index == 2) setPresentAdderAnimation("animate__slideInLeft");
+    const element = document.querySelector("#" + currentWindow);
+    element.className = "animate__animated animate__bounceOutRight animate__faster";
+
+    element.addEventListener("animationend", () => {
+      if (index === windows.length - 1) reset();
+      index === 0 ? setCurrentWindow(windows[windows.length - 1]) : setCurrentWindow(windows[index - 1]);
+    });
   };
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       {currentWindow === "PeopleAdder" ? (
         <PeopleAdder />
       ) : currentWindow === "PresentAdder" ? (
-        <PresentAdder />
+        <PresentAdder animation={presentAdderAnimation} />
       ) : (
         <Score />
       )}
-      <IconButton
-        id="back"
-        size="large"
-        onClick={() => previousWindow()}
-        disabled={windows.findIndex((item) => item === currentWindow) === 0}
-      >
+      <IconButton id="back" size="large" onClick={() => previousWindow()} disabled={windows.findIndex((item) => item === currentWindow) === 0}>
         <ArrowBack fontSize="large" />
       </IconButton>
       <IconButton
@@ -96,13 +105,12 @@ function App() {
         size="large"
         onClick={() => nextWindow()}
         disabled={
-          windows.findIndex((item) => item === currentWindow) ===
-          windows.length - 1 || (presents.length == 0 && currentWindow !== "PeopleAdder")
+          windows.findIndex((item) => item === currentWindow) === windows.length - 1 || (presents.length == 0 && currentWindow !== "PeopleAdder")
         }
       >
         <ArrowForward fontSize="large" />
       </IconButton>
-    </>
+    </ThemeProvider>
   );
 }
 
