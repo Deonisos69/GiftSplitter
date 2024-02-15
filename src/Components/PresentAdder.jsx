@@ -1,4 +1,4 @@
-import { MenuItem, Select, TextField, Alert } from "@mui/material";
+import { MenuItem, Select, TextField, Alert, InputAdornment } from "@mui/material";
 import { usePresentStore } from "../db/usePresentStore";
 import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
@@ -11,17 +11,19 @@ export default function PresentAdder({ animation = "animate__slideInRight" }) {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [paidBy, setPaidBy] = useState("");
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertTitle, setAlertTitle] = useState("")
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
 
   /** @type {Array} */
   const people = usePresentStore((state) => state.people);
   const addPresentStore = usePresentStore((state) => state.addPresent);
   const addPresent = (name, price, from, to, paidBy) => {
-    addPresentStore(name, price, from, to, paidBy);
-    setAlertTitle(title)
+    addPresentStore(name, cleanPrice(price), from, to, paidBy);
+    setAlertTitle(title);
     setShowAlert(true);
-    setTimeout(() => {setShowAlert(false)}, 5000)
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 5000);
     setFrom([]);
     setTo("");
     setTitle("");
@@ -29,18 +31,31 @@ export default function PresentAdder({ animation = "animate__slideInRight" }) {
     setPaidBy("");
   };
 
+  /**
+   * Replaces commas with dots for javascript compatibility.
+   * @param {string} price 
+   * @returns {string}
+   */
+  function cleanPrice(price) {
+    return price.replace(",",".")
+  }
+
   return (
     // eslint-disable-next-line react/prop-types
     <div className={"animate__animated  animate__faster animate__faster " + animation} id="PresentAdder">
-      {showAlert ? <Alert className="animate__animated animate__faster animate__slideInDown success" icon={<Check fontSize="inherit" />} severity="success">
-        {alertTitle} hinzugefügt.
-      </Alert> : <></>}
+      {showAlert ? (
+        <Alert className="animate__animated animate__faster animate__slideInDown success" icon={<Check fontSize="inherit" />} severity="success">
+          {alertTitle} hinzugefügt.
+        </Alert>
+      ) : (
+        <></>
+      )}
       <div className="presentsDiv">
         <h1>WELCHE GESCHENKE WURDEN VERTEILT?</h1>
         <div className="presentInputs">
           <div className="presentInput">
             <h4>Von</h4>
-            <Select variant="standard" value={from} onChange={(e) => setFrom(e.target.value)} multiple label={"People"} displayEmpty classes="input">
+            <Select variant="standard" value={from} onChange={(e) => setFrom(e.target.value)} multiple label={"People"} displayEmpty>
               {people.map((person) => (
                 <MenuItem key={person.id} value={person}>
                   {person.name}
@@ -58,7 +73,15 @@ export default function PresentAdder({ animation = "animate__slideInRight" }) {
           </div>
           <div className="presentInput">
             <h4>Preis</h4>
-            <TextField className="input" variant="standard" value={price} onChange={(e) => setPrice(e.target.value)} />
+            <TextField
+              className="input"
+              variant="standard"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">€</InputAdornment>,
+              }}
+            />
           </div>
           <div className="presentInput">
             <h4>Bezahlt von</h4>

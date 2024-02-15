@@ -8,13 +8,14 @@ export default function Score({animation = "animate__slideInRight"}) {
     /** @type {Transaction[]} */
     const transactions = usePresentStore(state => state.transactions)
   return (
-    <div className={"scrollable score animate__animated " + animation} id="Score">
+    <div className={"animate__animated animate__faster " + animation} id="Score">
+      <div className="scrollable center">
         {transactions.map(transaction => (
-          <div key={transaction.id}>
+          <div className="score"  key={transaction.id}>
             <div >{transaction.from.name} schuldet {transaction.to.name} {transaction.amount.toFixed(2)} €</div>
-            <hr />
           </div>
         ))}
+      </div>
     </div>
   )
 }

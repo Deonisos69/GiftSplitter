@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { usePresentStore } from "../db/usePresentStore";
 import { TextField, Chip } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import { Add } from "@mui/icons-material";
 
-export default function PeopleAdder() {
+export default function PeopleAdder({animation = "animate__slideInRight"}) {
   // State
   const [personName, setPersonName] = useState("");
 
@@ -18,7 +19,7 @@ export default function PeopleAdder() {
     setPersonName("")
   }
   return (
-    <div className="animate__animated animate__slideInLeft animate__faster" id="PeopleAdder">
+    <div className={"animate__animated animate__faster " + animation} id="PeopleAdder">
     <h1>WER HAT SICH AN DEN GESCHENKEN BETEILIGT?</h1>
     <div>
       <TextField

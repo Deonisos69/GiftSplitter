@@ -9,12 +9,12 @@ import "animate.css";
 import { usePresentStore } from "./db/usePresentStore";
 import Transaction from "./model/Transaction";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Presents from "./Components/Presents";
 
 function App() {
-  const [currentWindow, setCurrentWindow] = useState("PeopleAdder");
-  const [windows] = useState(["PeopleAdder", "PresentAdder", "Score"]);
-  const [presentAdderAnimation, setPresentAdderAnimation] = useState("");
-  const [scoreAnimation, setScoreAnimation] = useState("");
+  const [currentWindow, setCurrentWindow] = useState({ position: 0, title: "PeopleAdder" });
+  const [windows] = useState(["PeopleAdder", "PresentAdder", "Presents", "Score"]);
+  const [animations, setAnimations] = useState(["animate__slideInRight", "animate__slideInRight", "animate__slideInRight", "animate__slideInRight"]);
 
   const reset = usePresentStore((state) => state.reset);
   const presents = usePresentStore((state) => state.presents);
@@ -66,41 +66,48 @@ function App() {
   };
 
   const nextWindow = () => {
-    let index = windows.findIndex((item) => item === currentWindow);
-    if (index == 0) setPresentAdderAnimation("animate__slideInRight");
-    if (index == 1) setScoreAnimation("animate__slideInRight");
-    const element = document.querySelector("#" + currentWindow);
-    element.className = "animate__animated animate__bounceOutLeft animate__faster";
+    const element = document.querySelector("#" + currentWindow.title);
+    let newAnimations = [...animations];
+    newAnimations[currentWindow.position] = "animate__bounceOutLeft";
+    setAnimations(newAnimations);
 
+    
     element.addEventListener("animationend", () => {
-      if (index === windows.length - 2) calculateTransactions();
-      index === windows.length - 1 ? setCurrentWindow(windows[0]) : setCurrentWindow(windows[index + 1]);
+      newAnimations[currentWindow.position + 1] = "animate__slideInRight";
+      setAnimations(newAnimations);
+      if (currentWindow.title === "Presents") calculateTransactions();
+      setCurrentWindow({ position: currentWindow.position + 1, title: windows[currentWindow.position + 1] });
     });
   };
 
   const previousWindow = () => {
-    let index = windows.findIndex((item) => item === currentWindow);
-    if (index == 2) setPresentAdderAnimation("animate__slideInLeft");
-    const element = document.querySelector("#" + currentWindow);
-    console.log(currentWindow)
-    element.className = "animate__animated animate__bounceOutRight animate__faster";
+    const element = document.querySelector("#" + currentWindow.title);
+    let newAnimations = [...animations];
+    newAnimations[currentWindow.position] = "animate__bounceOutRight";
+    setAnimations(newAnimations);
 
+    
+    
     element.addEventListener("animationend", () => {
-      if (index === windows.length - 1) reset();
-      index === 0 ? setCurrentWindow(windows[windows.length - 1]) : setCurrentWindow(windows[index - 1]);
+      newAnimations[currentWindow.position - 1] = "animate__slideInLeft";
+      setAnimations(newAnimations);
+      if (currentWindow.title == "Score") reset();
+      setCurrentWindow({ position: currentWindow.position - 1, title: windows[currentWindow.position - 1] });
     });
   };
 
   return (
     <ThemeProvider theme={theme}>
-      {currentWindow === "PeopleAdder" ? (
-        <PeopleAdder />
-      ) : currentWindow === "PresentAdder" ? (
-        <PresentAdder animation={presentAdderAnimation} />
+      {currentWindow.title === "PeopleAdder" ? (
+        <PeopleAdder animation={animations[0]} />
+      ) : currentWindow.title === "PresentAdder" ? (
+        <PresentAdder animation={animations[1]} />
+      ) : currentWindow.title === "Presents" ? (
+        <Presents animation={animations[2]} />
       ) : (
-        <Score animation={scoreAnimation}/>
+        <Score animation={animations[3]} />
       )}
-      <IconButton id="back" size="large" onClick={() => previousWindow()} disabled={windows.findIndex((item) => item === currentWindow) === 0}>
+      <IconButton id="back" size="large" onClick={() => previousWindow()} disabled={currentWindow.position == 0}>
         <ArrowBack fontSize="large" />
       </IconButton>
       <IconButton
@@ -108,7 +115,10 @@ function App() {
         size="large"
         onClick={() => nextWindow()}
         disabled={
-          windows.findIndex((item) => item === currentWindow) === windows.length - 1 || (presents.length == 0 && currentWindow !== "PeopleAdder")
+          currentWindow.position == windows.length - 1 ||
+          (currentWindow.title == "PeopleAdder" && people.length == 0) ||
+          (currentWindow.title == "PresentAdder" && presents.length == 0) ||
+          (currentWindow.title == "Presents" && presents.length == 0)
         }
       >
         <ArrowForward fontSize="large" />

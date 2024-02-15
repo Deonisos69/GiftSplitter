@@ -4,12 +4,12 @@ import { Delete } from "@mui/icons-material";
 import { usePresentStore } from "../db/usePresentStore";
 import IconButton from "@mui/material/IconButton";
 
-export default function PeopleAdder({animation = "animate__slideInRight"}) {
+export default function Presents({animation = "animate__slideInRight"}) {
   const presents = usePresentStore((state) => state.presents);
   const deletePresent = usePresentStore((state) => state.deletePresent);
 
   return (
-    <TableContainer className={"animate__animated animate__faster table " + animation}>
+    <TableContainer className={"scrollable animate__animated animate__faster table " + animation} id="Presents">
       <Table size="small" padding="none">
         <TableHead>
           <TableRow className="tableTop">
@@ -28,7 +28,7 @@ export default function PeopleAdder({animation = "animate__slideInRight"}) {
               <TableCell>{present.from.map((from) => from.name).join(", ")}</TableCell>
               <TableCell>{present.to}</TableCell>
               <TableCell>{present.name}</TableCell>
-              <TableCell>{present.price}</TableCell>
+              <TableCell>{present.price} €</TableCell>
               <TableCell>{present.paidBy.name}</TableCell>
               <TableCell>
                 <IconButton onClick={() => deletePresent(present.id)}>
