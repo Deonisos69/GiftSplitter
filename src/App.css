@@ -38,9 +38,15 @@ h1 {
   display: flex;
 }
 
+.presentsDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 #addButton {
-  /* position: absolute; */
-  margin: 20px;
+  margin-top: 20%;
 }
 
 #back {
@@ -48,6 +54,10 @@ h1 {
   bottom: 10%;
   left: 10%;
 
+}
+
+.MuiInputBase-root {
+  max-width: 113px;
 }
 
 #forward {
@@ -88,6 +98,7 @@ td, th {
 .presentInputs {
   display: flex;
   flex-direction: column;
+  width: 75%;
 }
 
 .presentInput {
@@ -96,7 +107,7 @@ td, th {
   margin: 3px;
 }
 
-.presentInput > input, h4 {
+.presentInput > input, .presentInput > h4, .presentInput > div {
   width: 100%;
   margin: 0;
   text-align: left;
@@ -105,6 +116,26 @@ td, th {
   padding: 0;
 }
 
+#PresentAdder {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.success {
+    position: absolute;
+    top: 0;
+}
+
+hr {
+  border-width: 0.5px;
+  border-color: #272638;
+  width: 150px;
+  border-radius: 100%;
+}
 @media only screen and (max-width: 600px) {
   #root {
   font-size: 0.75rem;
@@ -112,5 +143,9 @@ td, th {
 
   td, th {
     padding: 8px !important;
+  }
+
+  .score {
+    font-size: 1.25rem;
   }
 }

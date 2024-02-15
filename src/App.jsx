@@ -13,7 +13,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 function App() {
   const [currentWindow, setCurrentWindow] = useState("PeopleAdder");
   const [windows] = useState(["PeopleAdder", "PresentAdder", "Score"]);
-  const [presentAdderAnimation, setPresentAdderAnimation] = useState(true);
+  const [presentAdderAnimation, setPresentAdderAnimation] = useState("");
+  const [scoreAnimation, setScoreAnimation] = useState("");
 
   const reset = usePresentStore((state) => state.reset);
   const presents = usePresentStore((state) => state.presents);
@@ -67,6 +68,7 @@ function App() {
   const nextWindow = () => {
     let index = windows.findIndex((item) => item === currentWindow);
     if (index == 0) setPresentAdderAnimation("animate__slideInRight");
+    if (index == 1) setScoreAnimation("animate__slideInRight");
     const element = document.querySelector("#" + currentWindow);
     element.className = "animate__animated animate__bounceOutLeft animate__faster";
 
@@ -80,6 +82,7 @@ function App() {
     let index = windows.findIndex((item) => item === currentWindow);
     if (index == 2) setPresentAdderAnimation("animate__slideInLeft");
     const element = document.querySelector("#" + currentWindow);
+    console.log(currentWindow)
     element.className = "animate__animated animate__bounceOutRight animate__faster";
 
     element.addEventListener("animationend", () => {
@@ -95,7 +98,7 @@ function App() {
       ) : currentWindow === "PresentAdder" ? (
         <PresentAdder animation={presentAdderAnimation} />
       ) : (
-        <Score />
+        <Score animation={scoreAnimation}/>
       )}
       <IconButton id="back" size="large" onClick={() => previousWindow()} disabled={windows.findIndex((item) => item === currentWindow) === 0}>
         <ArrowBack fontSize="large" />
